@@ -1,9 +1,223 @@
+
 {% extends 'base.html' %}
-{% block title %}{{ heading }} | NOVA{% endblock %}{% block content %}<section class="container section narrow"><p class="eyebrow">ADMIN AREA</p><h1 class="page-title">{{ heading }}.</h1><form class="panel product-form" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><label>Product name<input name="name" value="{{ product.name if product else '' }}" required maxlength="100"></label><label>Price (£)<input name="price" type="number" min="0" step="0.01" value="{{ product.price if product else '' }}" required></label><label>Description<textarea name="description" required rows="4">{{ product.description if product else '' }}</textarea></label><div class="form-grid"><label>Stock quantity<input name="stock_quantity" type="number" min="0" value="{{ product.stock_quantity if product else 0 }}" required></label><label>Storage<input name="storage" placeholder="256GB" value="{{ product.storage if product else '' }}" required></label><label>Colour<input name="colour" value="{{ product.colour if product else '' }}" required></label><label>Condition<select name="condition" required><option value="New" {% if product and product.condition=='New' %}selected{% endif %}>New</option><option value="Refurbished" {% if product and product.condition=='Refurbished' %}selected{% endif %}>Refurbished</option></select></label><label>Battery health (%)<input name="battery_health" type="number" min="0" max="100" value="{{ product.battery_health if product else 100 }}" required></label><label>Grade (optional)<input name="grade" placeholder="A" value="{{ product.grade if product and product.grade else '' }}">Image URL (optional)<input name="phone_picture" type="url" placeholder="https://example.com/phone.jpg" value="{{ product.phone_picture if product else '' }}"></label><p class="muted">
-    <label>
-        Product Image
-        <input type="file"
-        name="phone_picture"
-        accept="image/jpeg,image/webp">
-    </label>
-</p><div class="button-row"><button class="button">Save product</button><a class="button secondary" href="{{ url_for('admin') }}">Cancel</a></div></form></section>{% endblock %}
+
+{% block title %}
+    {{ heading }} | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="container section narrow">
+
+    <p class="eyebrow">
+        ADMIN AREA
+    </p>
+
+    <h1 class="page-title">
+        {{ heading }}.
+    </h1>
+
+    <form
+        class="panel product-form"
+        method="post"
+        enctype="multipart/form-data"
+    >
+
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <!-- Product Name -->
+        <label>
+            Product name
+
+            <input
+                type="text"
+                name="name"
+                value="{{ product.name if product else '' }}"
+                required
+                maxlength="100"
+            >
+        </label>
+
+        <!-- Price -->
+        <label>
+            Price (£)
+
+            <input
+                type="number"
+                name="price"
+                min="0"
+                step="0.01"
+                value="{{ product.price if product else '' }}"
+                required
+            >
+        </label>
+
+        <!-- Description -->
+        <label>
+            Description
+
+            <textarea
+                name="description"
+                rows="4"
+                required
+            >{{ product.description if product else '' }}</textarea>
+        </label>
+
+        <div class="form-grid">
+
+            <!-- Stock Quantity -->
+            <label>
+                Stock quantity
+
+                <input
+                    type="number"
+                    name="stock_quantity"
+                    min="0"
+                    value="{{ product.stock_quantity if product else 0 }}"
+                    required
+                >
+            </label>
+
+            <!-- Storage -->
+            <label>
+                Storage
+
+                <input
+                    type="text"
+                    name="storage"
+                    placeholder="256GB"
+                    value="{{ product.storage if product else '' }}"
+                    required
+                >
+            </label>
+
+            <!-- Colour -->
+            <label>
+                Colour
+
+                <input
+                    type="text"
+                    name="colour"
+                    value="{{ product.colour if product else '' }}"
+                    required
+                >
+            </label>
+
+            <!-- Condition -->
+            <label>
+                Condition
+
+                <select name="condition" required>
+
+                    <option
+                        value="New"
+                        {% if product and product.condition == 'New' %}
+                            selected
+                        {% endif %}
+                    >
+                        New
+                    </option>
+
+                    <option
+                        value="Refurbished"
+                        {% if product and product.condition == 'Refurbished' %}
+                            selected
+                        {% endif %}
+                    >
+                        Refurbished
+                    </option>
+
+                </select>
+            </label>
+
+            <!-- Battery Health -->
+            <label>
+                Battery health (%)
+
+                <input
+                    type="number"
+                    name="battery_health"
+                    min="0"
+                    max="100"
+                    value="{{ product.battery_health if product else 100 }}"
+                    required
+                >
+            </label>
+
+            <!-- Grade -->
+            <label>
+                Grade (optional)
+
+                <input
+                    type="text"
+                    name="grade"
+                    placeholder="A"
+                    value="{{ product.grade if product and product.grade else '' }}"
+                >
+            </label>
+
+        </div>
+
+        <!-- Product Image -->
+        <label>
+            Product Image
+
+            <input
+                type="file"
+                name="phone_picture"
+                accept="image/jpeg,image/png,image/webp"
+            >
+        </label>
+
+        <p class="muted">
+            Supported formats: JPG, PNG and WEBP.
+            Maximum file size: 5MB.
+        </p>
+
+        <!-- Existing Product Image -->
+        {% if product and product.phone_picture %}
+
+            <div class="existing-image">
+
+                <p>
+                    Current product image:
+                </p>
+
+                <img
+                    src="{{ product.phone_picture }}"
+                    alt="{{ product.name }}"
+                    style="max-width: 180px; width: 100%; height: auto;"
+                >
+
+            </div>
+
+        {% endif %}
+
+        <!-- Form Buttons -->
+        <div class="button-row">
+
+            <button
+                type="submit"
+                class="button"
+            >
+                Save product
+            </button>
+
+            <a
+                class="button secondary"
+                href="{{ url_for('admin') }}"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock %}

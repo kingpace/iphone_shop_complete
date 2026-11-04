@@ -9,9 +9,20 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import or_
 from werkzeug.security import check_password_hash, generate_password_hash
+from uuid import uuid4
+from PIL import Image, UnidentifiedImageError
+from werkzeug.utils import secure_filename
 
 BASE_DIR = Path(__file__).resolve().parent
 app = Flask(__name__)
+UPLOAD_FOLDER = BASE_DIR / "static" / "images"
+
+UPLOAD_FOLDER.mkdir(
+    parents=True,
+    exist_ok=True
+)
+
+app.config["MAX_CONTENT_LENGTH"] = 5 * 1024 * 1024
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-only-change-before-deployment')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + str(BASE_DIR / 'phone_shop.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -91,30 +102,135 @@ def own_cart():
         db.session.commit()
     return cart
 
-def read_product_form(product):
-    name = request.form.get('name', '').strip()
-    description = request.form.get('description', '').strip()
-    storage = request.form.get('storage', '').strip()
-    colour = request.form.get('colour', '').strip()
-    condition = request.form.get('condition', '')
-    grade = request.form.get('grade', '').strip() or None
-    picture = request.form.get('phone_picture', '').strip()
-    try:
-        price = Decimal(request.form.get('price', ''))
-        stock = int(request.form.get('stock_quantity', ''))
-        battery = int(request.form.get('battery_health', ''))
-        if not price.is_finite() or price < 0 or price.as_tuple().exponent < -2 or stock < 0 or not 0 <= battery <= 100:
-            raise ValueError
-    except (ValueError, ArithmeticError):
-        return 'Enter a valid price, stock quantity and battery health.'
-    if not name or not description or not storage or not colour or condition not in ('New', 'Refurbished'):
-        return 'Complete all required fields.'
-    if len(name) > 100 or len(storage) > 30 or len(colour) > 50 or len(picture) > 500 or (grade and len(grade) > 10):
-        return 'One of the fields is too long.'
-    for key, value in {'name':name, 'description':description, 'storage':storage, 'colour':colour, 'condition':condition, 'grade':grade, 'phone_picture':picture, 'price':price, 'stock_quantity':stock, 'battery_health':battery}.items():
-        setattr(product, key, value)
-    return None
+def save_product_image():
 
+    image = request.files.get("phone_picture")
+
+    if not image or not image.filename:
+        return None
+
+    filename = secure_filename(image.filename)
+
+    extension = Path(filename).suffix.lower()
+
+    allowed_formats = {
+        ".jpg": "JPEG",
+        ".jpeg": "JPEG",
+        ".png": "PNG",
+        ".webp": "WEBP"
+    }
+
+    if extension not in allowed_formats:
+        raise ValueError(
+            "Only JPG, PNG and WEBP images are allowed."
+        )
+
+    try:
+        image.stream.seek(0)
+
+        with Image.open(image.stream) as img:
+
+            if img.format != allowed_formats[extension]:
+                raise ValueError(
+                    "The image format is invalid."
+                )
+
+            img.verify()
+
+    except (UnidentifiedImageError, OSError):
+        raise ValueError(
+            "The uploaded file is not a valid image."
+        )
+
+    unique_filename = f"{uuid4().hex}{extension}"
+
+    image.stream.seek(0)
+
+    image.save(
+        UPLOAD_FOLDER / unique_filename
+    )
+
+    return url_for(
+        "static",
+        filename=f"images/{unique_filename}"
+    )
+def read_product_form(product):
+
+    name = request.form.get("name", "").strip()
+    description = request.form.get("description", "").strip()
+    storage = request.form.get("storage", "").strip()
+    colour = request.form.get("colour", "").strip()
+    condition = request.form.get("condition", "")
+    grade = request.form.get("grade", "").strip() or None
+
+    try:
+        price = Decimal(
+            request.form.get("price", "")
+        )
+
+        stock = int(
+            request.form.get("stock_quantity", "")
+        )
+
+        battery = int(
+            request.form.get("battery_health", "")
+        )
+
+        if (
+            not price.is_finite()
+            or price < 0
+            or price.as_tuple().exponent < -2
+            or stock < 0
+            or not 0 <= battery <= 100
+        ):
+            raise ValueError
+
+    except (ValueError, ArithmeticError):
+        return (
+            "Enter a valid price, stock quantity "
+            "and battery health."
+        )
+
+    if (
+        not name
+        or not description
+        or not storage
+        or not colour
+        or condition not in ("New", "Refurbished")
+    ):
+        return "Complete all required fields."
+
+    if (
+        len(name) > 100
+        or len(storage) > 30
+        or len(colour) > 50
+        or (grade and len(grade) > 10)
+    ):
+        return "One of the fields is too long."
+
+    # Validate the uploaded image before updating the product
+    try:
+        picture = save_product_image()
+
+    except ValueError as error:
+        return str(error)
+
+    # Update product details
+    product.name = name
+    product.description = description
+    product.storage = storage
+    product.colour = colour
+    product.condition = condition
+    product.grade = grade
+    product.price = price
+    product.stock_quantity = stock
+    product.battery_health = battery
+
+    # Save the image URL in the database
+    if picture:
+        product.phone_picture = picture
+
+    return None
 @app.route('/')
 def home():
     featured = Product.query.order_by(Product.id.desc()).limit(4).all()
