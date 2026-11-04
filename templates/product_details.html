@@ -1,1 +1,188 @@
-{% extends 'base.html' %}{% block title %}{{ product.name }} | NOVA{% endblock %}{% block content %}<section class="container section"><a class="back-link" href="{{ url_for('products') }}">← Back to all iPhones</a><div class="details-grid"><div class="detail-image">{% if product.phone_picture %}<img src="{{ product.phone_picture }}" alt="{{ product.name }}">{% else %}<span class="phone-placeholder">◧</span>{% endif %}</div><div><p class="eyebrow">{{ product.condition }} · {{ product.storage }}</p><h1 class="page-title">{{ product.name }}</h1><p class="detail-price">£{{ '%.2f'|format(product.price) }}</p><p class="intro">{{ product.description }}</p><div class="spec-grid"><div><span>Storage</span><strong>{{ product.storage }}</strong></div><div><span>Colour</span><strong>{{ product.colour }}</strong></div><div><span>Condition</span><strong>{{ product.condition }}</strong></div><div><span>Battery health</span><strong>{{ product.battery_health }}%</strong></div>{% if product.grade %}<div><span>Grade</span><strong>{{ product.grade }}</strong></div>{% endif %}<div><span>Stock</span><strong>{{ product.stock_quantity }} available</strong></div></div><form method="post" action="{{ url_for('add_to_cart', id=product.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="button wide" {% if product.stock_quantity < 1 %}disabled{% endif %}>{{ 'Out of stock' if product.stock_quantity < 1 else 'Add to cart' }}</button></form><p class="muted small-note">Checkout is not available in this demo yet.</p></div></div></section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ product.name }} | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="container section">
+
+    <!-- Back to Products -->
+    <a
+        class="back-link"
+        href="{{ url_for('products') }}"
+    >
+        ← Back to all iPhones
+    </a>
+
+    <!-- Product Details Layout -->
+    <div class="details-grid">
+
+        <!-- Product Image -->
+        <div class="detail-image">
+
+            {% if product.phone_picture %}
+
+                <img
+                    src="{{ product.phone_picture }}"
+                    alt="{{ product.name }}"
+                >
+
+            {% else %}
+
+                <span class="phone-placeholder">
+                    ◧
+                </span>
+
+            {% endif %}
+
+        </div>
+
+        <!-- Product Information -->
+        <div>
+
+            <!-- Condition and Storage -->
+            <p class="eyebrow">
+                {{ product.condition }} · {{ product.storage }}
+            </p>
+
+            <!-- Product Name -->
+            <h1 class="page-title">
+                {{ product.name }}
+            </h1>
+
+            <!-- Product Price -->
+            <p class="detail-price">
+                £{{ '%.2f'|format(product.price) }}
+            </p>
+
+            <!-- Product Description -->
+            <p class="intro">
+                {{ product.description }}
+            </p>
+
+            <!-- Product Specifications -->
+            <div class="spec-grid">
+
+                <!-- Storage -->
+                <div>
+                    <span>
+                        Storage
+                    </span>
+
+                    <strong>
+                        {{ product.storage }}
+                    </strong>
+                </div>
+
+                <!-- Colour -->
+                <div>
+                    <span>
+                        Colour
+                    </span>
+
+                    <strong>
+                        {{ product.colour }}
+                    </strong>
+                </div>
+
+                <!-- Condition -->
+                <div>
+                    <span>
+                        Condition
+                    </span>
+
+                    <strong>
+                        {{ product.condition }}
+                    </strong>
+                </div>
+
+                <!-- Battery Health -->
+                <div>
+                    <span>
+                        Battery health
+                    </span>
+
+                    <strong>
+                        {{ product.battery_health }}%
+                    </strong>
+                </div>
+
+                <!-- Refurbished Grade -->
+                {% if product.grade %}
+
+                    <div>
+                        <span>
+                            Grade
+                        </span>
+
+                        <strong>
+                            {{ product.grade }}
+                        </strong>
+                    </div>
+
+                {% endif %}
+
+                <!-- Stock Availability -->
+                <div>
+                    <span>
+                        Stock
+                    </span>
+
+                    <strong>
+                        {{ product.stock_quantity }} available
+                    </strong>
+                </div>
+
+            </div>
+
+            <!-- Add to Cart Form -->
+            <form
+                method="post"
+                action="{{ url_for('add_to_cart', id=product.id) }}"
+            >
+
+                <!-- CSRF Protection -->
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="{{ csrf_token() }}"
+                >
+
+                <!-- Add to Cart Button -->
+                <button
+                    type="submit"
+                    class="button wide"
+                    {% if product.stock_quantity < 1 %}
+                        disabled
+                    {% endif %}
+                >
+
+                    {% if product.stock_quantity < 1 %}
+
+                        Out of stock
+
+                    {% else %}
+
+                        Add to cart
+
+                    {% endif %}
+
+                </button>
+
+            </form>
+
+            <!-- Checkout Notice -->
+            <p class="muted small-note">
+                Checkout is not available in this demo yet.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,1 +1,144 @@
-{% extends 'base.html' %}{% block title %}Admin dashboard | NOVA{% endblock %}{% block content %}<section class="container section"><div class="section-heading"><div><p class="eyebrow">ADMIN AREA</p><h1 class="page-title">Product dashboard.</h1></div><a class="button" href="{{ url_for('add_products') }}">+ Add product</a></div><div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Condition</th><th>Actions</th></tr></thead><tbody>{% for product in products %}<tr><td>{{ product.name }}</td><td>£{{ '%.2f'|format(product.price) }}</td><td>{{ product.stock_quantity }}</td><td>{{ product.condition }}</td><td><div class="admin-actions"><a href="{{ url_for('edit_products', id=product.id) }}">Edit</a><form method="post" action="{{ url_for('delete_product', id=product.id) }}" onsubmit="return confirm('Delete this product?')"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="remove-link">Delete</button></form></div></td></tr>{% else %}<tr><td colspan="5">No products added yet.</td></tr>{% endfor %}</tbody></table></div></section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Admin dashboard | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="container section">
+
+    <!-- Admin Dashboard Heading -->
+    <div class="section-heading">
+
+        <div>
+
+            <p class="eyebrow">
+                ADMIN AREA
+            </p>
+
+            <h1 class="page-title">
+                Product dashboard.
+            </h1>
+
+        </div>
+
+        <!-- Add Product Button -->
+        <a
+            class="button"
+            href="{{ url_for('add_products') }}"
+        >
+            + Add product
+        </a>
+
+    </div>
+
+    <!-- Product Table -->
+    <div class="admin-table-wrap">
+
+        <table class="admin-table">
+
+            <!-- Table Headings -->
+            <thead>
+
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Condition</th>
+                    <th>Actions</th>
+                </tr>
+
+            </thead>
+
+            <!-- Table Body -->
+            <tbody>
+
+                {% for product in products %}
+
+                    <tr>
+
+                        <!-- Product Name -->
+                        <td>
+                            {{ product.name }}
+                        </td>
+
+                        <!-- Product Price -->
+                        <td>
+                            £{{ '%.2f'|format(product.price) }}
+                        </td>
+
+                        <!-- Stock Quantity -->
+                        <td>
+                            {{ product.stock_quantity }}
+                        </td>
+
+                        <!-- Product Condition -->
+                        <td>
+                            {{ product.condition }}
+                        </td>
+
+                        <!-- Product Actions -->
+                        <td>
+
+                            <div class="admin-actions">
+
+                                <!-- Edit Product -->
+                                <a
+                                    href="{{ url_for('edit_products', id=product.id) }}"
+                                >
+                                    Edit
+                                </a>
+
+                                <!-- Delete Product -->
+                                <form
+                                    method="post"
+                                    action="{{ url_for('delete_product', id=product.id) }}"
+                                    onsubmit="return confirm('Delete this product?')"
+                                >
+
+                                    <!-- CSRF Protection -->
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="remove-link"
+                                    >
+                                        Delete
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <!-- No Products -->
+                    <tr>
+
+                        <td colspan="5">
+                            No products added yet.
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+{% endblock %}

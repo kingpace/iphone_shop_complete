@@ -1,1 +1,233 @@
-{% extends 'base.html' %}{% block title %}NOVA Phones | Premium iPhones{% endblock %}{% block content %}<section class="hero"><div class="container hero-grid"><div><p class="eyebrow light">YOUR NEXT IPHONE STARTS HERE</p><h1>Powerful tech.<br><em>Better value.</em></h1><p class="hero-copy">Discover new and carefully selected refurbished iPhones. Premium choices, without the complication.</p><div class="hero-actions"><a class="button white" href="{{ url_for('products') }}">Explore iPhones →</a><a class="text-link" href="#why-us">Why NOVA?</a></div></div><div class="hero-art" aria-hidden="true"><div class="device device-back"></div><div class="device device-front"><div class="camera-island"><i></i><i></i><i></i></div><span class="device-mark">NOVA</span></div><div class="hero-orb"></div></div></div></section><section class="container section"><div class="section-heading"><div><p class="eyebrow">JUST ADDED</p><h2>Find your next favourite.</h2></div><a class="text-arrow" href="{{ url_for('products') }}">Shop all →</a></div><div class="product-grid">{% for product in featured %}{% include '_product_card.html' %}{% else %}<p>No products yet. An admin can add some from the dashboard.</p>{% endfor %}</div></section><section class="value-section" id="why-us"><div class="container"><p class="eyebrow">WHY CHOOSE NOVA</p><h2>Everything you need.<br>Nothing you don't.</h2><div class="benefits"><article><span class="benefit-icon">✦</span><h3>Options for every budget</h3><p>Explore new and refurbished models with simple, transparent pricing.</p></article><article><span class="benefit-icon">◎</span><h3>Details that matter</h3><p>See storage, condition, battery health and availability before deciding.</p></article><article><span class="benefit-icon">◇</span><h3>Shop with confidence</h3><p>Browse securely, save products in your cart and manage your account.</p></article></div></div></section><section class="container bottom-cta"><h2>Ready for an upgrade?</h2><p>Your next iPhone is only a few clicks away.</p><a class="button" href="{{ url_for('products') }}">Browse the collection</a></section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    NOVA Phones | Premium iPhones
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+
+    <div class="container hero-grid">
+
+        <!-- Hero Text -->
+        <div>
+
+            <p class="eyebrow light">
+                YOUR NEXT IPHONE STARTS HERE
+            </p>
+
+            <h1>
+                Powerful tech.
+                <br>
+                <em>Better value.</em>
+            </h1>
+
+            <p class="hero-copy">
+                Discover new and carefully selected refurbished iPhones.
+                Premium choices, without the complication.
+            </p>
+
+            <!-- Hero Buttons -->
+            <div class="hero-actions">
+
+                <a
+                    class="button white"
+                    href="{{ url_for('products') }}"
+                >
+                    Explore iPhones →
+                </a>
+
+                <a
+                    class="text-link"
+                    href="#why-us"
+                >
+                    Why NOVA?
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- Hero Phone Design -->
+        <div
+            class="hero-art"
+            aria-hidden="true"
+        >
+
+            <div class="device device-back"></div>
+
+            <div class="device device-front">
+
+                <div class="camera-island">
+
+                    <i></i>
+                    <i></i>
+                    <i></i>
+
+                </div>
+
+                <span class="device-mark">
+                    NOVA
+                </span>
+
+            </div>
+
+            <div class="hero-orb"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Featured Products Section -->
+<section class="container section">
+
+    <div class="section-heading">
+
+        <div>
+
+            <p class="eyebrow">
+                JUST ADDED
+            </p>
+
+            <h2>
+                Find your next favourite.
+            </h2>
+
+        </div>
+
+        <a
+            class="text-arrow"
+            href="{{ url_for('products') }}"
+        >
+            Shop all →
+        </a>
+
+    </div>
+
+    <!-- Featured Product Grid -->
+    <div class="product-grid">
+
+        {% for product in featured %}
+
+            {% include '_product_card.html' %}
+
+        {% else %}
+
+            <p>
+                No products yet.
+                An admin can add some from the dashboard.
+            </p>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+<!-- Why Choose NOVA Section -->
+<section
+    class="value-section"
+    id="why-us"
+>
+
+    <div class="container">
+
+        <p class="eyebrow">
+            WHY CHOOSE NOVA
+        </p>
+
+        <h2>
+            Everything you need.
+            <br>
+            Nothing you don't.
+        </h2>
+
+        <!-- Benefits -->
+        <div class="benefits">
+
+            <!-- Benefit 1 -->
+            <article>
+
+                <span class="benefit-icon">
+                    ✦
+                </span>
+
+                <h3>
+                    Options for every budget
+                </h3>
+
+                <p>
+                    Explore new and refurbished models with
+                    simple, transparent pricing.
+                </p>
+
+            </article>
+
+            <!-- Benefit 2 -->
+            <article>
+
+                <span class="benefit-icon">
+                    ◎
+                </span>
+
+                <h3>
+                    Details that matter
+                </h3>
+
+                <p>
+                    See storage, condition, battery health
+                    and availability before deciding.
+                </p>
+
+            </article>
+
+            <!-- Benefit 3 -->
+            <article>
+
+                <span class="benefit-icon">
+                    ◇
+                </span>
+
+                <h3>
+                    Shop with confidence
+                </h3>
+
+                <p>
+                    Browse securely, save products in your
+                    cart and manage your account.
+                </p>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Bottom Call to Action -->
+<section class="container bottom-cta">
+
+    <h2>
+        Ready for an upgrade?
+    </h2>
+
+    <p>
+        Your next iPhone is only a few clicks away.
+    </p>
+
+    <a
+        class="button"
+        href="{{ url_for('products') }}"
+    >
+        Browse the collection
+    </a>
+
+</section>
+
+{% endblock %}

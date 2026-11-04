@@ -1,1 +1,67 @@
-{% extends 'base.html' %}{% block title %}My account | NOVA{% endblock %}{% block content %}<section class="container section narrow"><p class="eyebrow">MY ACCOUNT</p><h1 class="page-title">Hello, {{ user.username }}.</h1><div class="panel"><p><strong>Email:</strong> {{ user.email }}</p><p><strong>Phone:</strong> {{ user.userphone or 'Not provided' }}</p><div class="button-row"><a class="button" href="{{ url_for('edit_details') }}">Edit profile</a><a class="button secondary" href="{{ url_for('change_password') }}">Change password</a></div></div></section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    My account | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="container section narrow">
+
+    <!-- Account Heading -->
+    <p class="eyebrow">
+        MY ACCOUNT
+    </p>
+
+    <h1 class="page-title">
+        Hello, {{ user.username }}.
+    </h1>
+
+    <!-- Account Information -->
+    <div class="panel">
+
+        <!-- Email Address -->
+        <p>
+            <strong>
+                Email:
+            </strong>
+
+            {{ user.email }}
+        </p>
+
+        <!-- Phone Number -->
+        <p>
+            <strong>
+                Phone:
+            </strong>
+
+            {{ user.userphone or 'Not provided' }}
+        </p>
+
+        <!-- Account Buttons -->
+        <div class="button-row">
+
+            <!-- Edit Profile -->
+            <a
+                class="button"
+                href="{{ url_for('edit_details') }}"
+            >
+                Edit profile
+            </a>
+
+            <!-- Change Password -->
+            <a
+                class="button secondary"
+                href="{{ url_for('change_password') }}"
+            >
+                Change password
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

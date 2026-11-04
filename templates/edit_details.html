@@ -1,1 +1,77 @@
-{% extends 'base.html' %}{% block title %}Edit profile | NOVA{% endblock %}{% block content %}<section class="auth-wrap"><form class="panel auth-panel" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><h1>Edit profile.</h1><label>Username<input name="username" value="{{ user.username }}" required></label><label>Email<input name="email" type="email" value="{{ user.email }}" required></label><label>Phone<input name="userphone" value="{{ user.userphone or '' }}"></label><button class="button wide">Save changes</button></form></section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit profile | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-wrap">
+
+    <!-- Edit Profile Form -->
+    <form
+        class="panel auth-panel"
+        method="post"
+    >
+
+        <!-- CSRF Protection -->
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <!-- Form Heading -->
+        <h1>
+            Edit profile.
+        </h1>
+
+        <!-- Username -->
+        <label>
+            Username
+
+            <input
+                type="text"
+                name="username"
+                value="{{ user.username }}"
+                required
+            >
+        </label>
+
+        <!-- Email -->
+        <label>
+            Email
+
+            <input
+                type="email"
+                name="email"
+                value="{{ user.email }}"
+                required
+            >
+        </label>
+
+        <!-- Phone Number -->
+        <label>
+            Phone
+
+            <input
+                type="tel"
+                name="userphone"
+                value="{{ user.userphone or '' }}"
+            >
+        </label>
+
+        <!-- Save Changes Button -->
+        <button
+            type="submit"
+            class="button wide"
+        >
+            Save changes
+        </button>
+
+    </form>
+
+</section>
+
+{% endblock %}

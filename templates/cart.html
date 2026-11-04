@@ -1,1 +1,241 @@
-{% extends 'base.html' %}{% block title %}Your cart | NOVA{% endblock %}{% block content %}<section class="container section"><p class="eyebrow">YOUR SELECTION</p><h1 class="page-title">Shopping cart.</h1>{% if items %}<div class="cart-layout"><div class="cart-items">{% for item in items %}<article class="cart-item"><div class="cart-thumb">{% if item.product.phone_picture %}<img src="{{ item.product.phone_picture }}" alt="{{ item.product.name }}">{% else %}◧{% endif %}</div><div class="cart-info"><h3><a href="{{ url_for('product_details', id=item.product.id) }}">{{ item.product.name }}</a></h3><p class="muted">{{ item.product.condition }} · {{ item.product.storage }}</p><p class="price">£{{ '%.2f'|format(item.product.price) }}</p><div class="quantity"><form method="post" action="{{ url_for('change_quantity', id=item.id, action='minus') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button aria-label="Decrease quantity" {% if item.quantity<=1 %}disabled{% endif %}>−</button></form><span>{{ item.quantity }}</span><form method="post" action="{{ url_for('change_quantity', id=item.id, action='plus') }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button aria-label="Increase quantity" {% if item.quantity>=item.product.stock_quantity %}disabled{% endif %}>+</button></form></div><form method="post" action="{{ url_for('remove_item', id=item.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="remove-link">Remove</button></form></div><strong>£{{ '%.2f'|format(item.product.price*item.quantity) }}</strong></article>{% endfor %}</div><aside class="panel order-summary"><h2>Order summary</h2><div class="summary-line"><span>Subtotal</span><strong>£{{ '%.2f'|format(total) }}</strong></div><p class="muted">Delivery and payments will be added later.</p><button class="button wide" disabled>Checkout coming soon</button><a class="text-arrow" href="{{ url_for('products') }}">Continue shopping →</a></aside></div>{% else %}<div class="empty-state"><h2>Your cart is empty.</h2><p>Discover something worth adding.</p><a class="button" href="{{ url_for('products') }}">Shop iPhones</a></div>{% endif %}</section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Your cart | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="container section">
+
+    <!-- Cart Heading -->
+    <p class="eyebrow">
+        YOUR SELECTION
+    </p>
+
+    <h1 class="page-title">
+        Shopping cart.
+    </h1>
+
+    {% if items %}
+
+        <!-- Cart Layout -->
+        <div class="cart-layout">
+
+            <!-- Cart Items -->
+            <div class="cart-items">
+
+                {% for item in items %}
+
+                    <article class="cart-item">
+
+                        <!-- Product Image -->
+                        <div class="cart-thumb">
+
+                            {% if item.product.phone_picture %}
+
+                                <img
+                                    src="{{ item.product.phone_picture }}"
+                                    alt="{{ item.product.name }}"
+                                >
+
+                            {% else %}
+
+                                ◧
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- Product Information -->
+                        <div class="cart-info">
+
+                            <!-- Product Name -->
+                            <h3>
+
+                                <a
+                                    href="{{ url_for('product_details', id=item.product.id) }}"
+                                >
+                                    {{ item.product.name }}
+                                </a>
+
+                            </h3>
+
+                            <!-- Condition and Storage -->
+                            <p class="muted">
+                                {{ item.product.condition }}
+                                ·
+                                {{ item.product.storage }}
+                            </p>
+
+                            <!-- Unit Price -->
+                            <p class="price">
+                                £{{ '%.2f'|format(item.product.price) }}
+                            </p>
+
+                            <!-- Quantity Controls -->
+                            <div class="quantity">
+
+                                <!-- Decrease Quantity -->
+                                <form
+                                    method="post"
+                                    action="{{ url_for('change_quantity', id=item.id, action='minus') }}"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        aria-label="Decrease quantity"
+                                        {% if item.quantity <= 1 %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                        −
+                                    </button>
+
+                                </form>
+
+                                <!-- Current Quantity -->
+                                <span>
+                                    {{ item.quantity }}
+                                </span>
+
+                                <!-- Increase Quantity -->
+                                <form
+                                    method="post"
+                                    action="{{ url_for('change_quantity', id=item.id, action='plus') }}"
+                                >
+
+                                    <input
+                                        type="hidden"
+                                        name="csrf_token"
+                                        value="{{ csrf_token() }}"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        aria-label="Increase quantity"
+                                        {% if item.quantity >= item.product.stock_quantity %}
+                                            disabled
+                                        {% endif %}
+                                    >
+                                        +
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                            <!-- Remove Product -->
+                            <form
+                                method="post"
+                                action="{{ url_for('remove_item', id=item.id) }}"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="{{ csrf_token() }}"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="remove-link"
+                                >
+                                    Remove
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                        <!-- Item Total -->
+                        <strong>
+                            £{{ '%.2f'|format(item.product.price * item.quantity) }}
+                        </strong>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- Order Summary -->
+            <aside class="panel order-summary">
+
+                <h2>
+                    Order summary
+                </h2>
+
+                <!-- Subtotal -->
+                <div class="summary-line">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <strong>
+                        £{{ '%.2f'|format(total) }}
+                    </strong>
+
+                </div>
+
+                <!-- Delivery Notice -->
+                <p class="muted">
+                    Delivery and payments will be added later.
+                </p>
+
+                <!-- Checkout Button -->
+                <button
+                    type="button"
+                    class="button wide"
+                    disabled
+                >
+                    Checkout coming soon
+                </button>
+
+                <!-- Continue Shopping -->
+                <a
+                    class="text-arrow"
+                    href="{{ url_for('products') }}"
+                >
+                    Continue shopping →
+                </a>
+
+            </aside>
+
+        </div>
+
+    {% else %}
+
+        <!-- Empty Cart -->
+        <div class="empty-state">
+
+            <h2>
+                Your cart is empty.
+            </h2>
+
+            <p>
+                Discover something worth adding.
+            </p>
+
+            <a
+                class="button"
+                href="{{ url_for('products') }}"
+            >
+                Shop iPhones
+            </a>
+
+        </div>
+
+    {% endif %}
+
+</section>
+
+{% endblock %}

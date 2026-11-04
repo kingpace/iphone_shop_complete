@@ -1,1 +1,101 @@
-{% extends 'base.html' %}{% block title %}Create account | NOVA{% endblock %}{% block content %}<section class="auth-wrap"><form class="panel auth-panel" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><p class="eyebrow">JOIN NOVA</p><h1>Create an account.</h1><label>Username<input name="username" required maxlength="50"></label><label>Email<input name="email" type="email" required autocomplete="email"></label><label>Phone (optional)<input name="userphone" type="tel"></label><label>Password (8+ characters)<input name="password" type="password" minlength="8" required autocomplete="new-password"></label><button class="button wide">Create account</button><p>Already registered? <a href="{{ url_for('login') }}">Sign in</a></p></form></section>{% endblock %}
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Create account | NOVA
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-wrap">
+
+    <form
+        class="panel auth-panel"
+        method="post"
+    >
+
+        <!-- CSRF Protection -->
+        <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ csrf_token() }}"
+        >
+
+        <!-- Form Heading -->
+        <p class="eyebrow">
+            JOIN NOVA
+        </p>
+
+        <h1>
+            Create an account.
+        </h1>
+
+        <!-- Username -->
+        <label>
+            Username
+
+            <input
+                type="text"
+                name="username"
+                required
+                maxlength="50"
+            >
+        </label>
+
+        <!-- Email -->
+        <label>
+            Email
+
+            <input
+                type="email"
+                name="email"
+                required
+                autocomplete="email"
+            >
+        </label>
+
+        <!-- Phone Number -->
+        <label>
+            Phone (optional)
+
+            <input
+                type="tel"
+                name="userphone"
+            >
+        </label>
+
+        <!-- Password -->
+        <label>
+            Password (8+ characters)
+
+            <input
+                type="password"
+                name="password"
+                minlength="8"
+                required
+                autocomplete="new-password"
+            >
+        </label>
+
+        <!-- Submit Button -->
+        <button
+            type="submit"
+            class="button wide"
+        >
+            Create account
+        </button>
+
+        <!-- Login Link -->
+        <p>
+            Already registered?
+
+            <a href="{{ url_for('login') }}">
+                Sign in
+            </a>
+        </p>
+
+    </form>
+
+</section>
+
+{% endblock %}
